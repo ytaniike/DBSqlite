@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Data;
+using System.Linq;
 
 namespace dbsqlite
 {
@@ -89,22 +88,11 @@ namespace dbsqlite
             return aCol;
         }
 
-        public Dictionary<string, string> fetchRow(string sSQL, Dictionary<string, string> aSQL)
+        public DataRow fetchRow(string sSQL, Dictionary<string, string> aSQL)
         {
             DataTable aPragmaData = this.fetchAll(sSQL, aSQL);
 
-            Dictionary<string, string> aRow = new Dictionary<string, string>();
-
-            // each all cols
-            foreach (DataRow oRow in aPragmaData.Rows)
-            {
-                foreach (DataColumn oColumn in aPragmaData.Columns)
-                {
-                    aRow.Add(oColumn.ColumnName, oRow[oColumn].ToString());
-                }
-
-                break;
-            }
+            DataRow aRow = aPragmaData.Rows[0];
 
             return aRow;
         }
@@ -183,7 +171,6 @@ namespace dbsqlite
                     }
                 }
             }
-
 
             // prepare asql ssql
             aSQL.Clear();
