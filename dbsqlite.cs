@@ -38,7 +38,7 @@ namespace dbsqlite
             this.oDB.Open();
         }
 
-        private string querySingle(string sSQL, Dictionary<string, string> aSQL)
+        public string fetchOne(string sSQL, Dictionary<string, string> aSQL)
         {
             string sReturn = "";
 
@@ -61,12 +61,6 @@ namespace dbsqlite
                 throw new Exception(oExecption.Message);
             }
 
-            return sReturn;
-        }
-
-        public string fetchOne(string sSQL, Dictionary<string, string> aSQL)
-        {
-            string sReturn = this.querySingle(sSQL, aSQL);
             return sReturn;
         }
 
