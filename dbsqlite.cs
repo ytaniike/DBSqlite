@@ -16,7 +16,7 @@ namespace dbsqlite
         public static string sDBPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         // last insert row id
-        public int iLastInsertRowID = 0;
+        public int iLastInsertRowID { get; private set; }
 
         // db sqlite object
         private SQLiteConnection oDB    = null;
@@ -27,6 +27,8 @@ namespace dbsqlite
         // constructor
         public DBSqlite(string sDBName)
         {
+            this.iLastInsertRowID = 0;
+
             // init db sqlite object
             this.oDB = new SQLiteConnection();
 
@@ -114,6 +116,26 @@ namespace dbsqlite
             }
 
             return oDataTable;
+        }
+
+        public void query(string sSQL, Dictionary<string, string> aSQL)
+        { 
+            // create new command
+            this.oCommand = this.oDB.CreateCommand();
+            this.oCommand.CommandType = CommandType.Text;
+
+            // replace placeholder - prevent sql injection
+            this.oCommand.CommandText = sSQL = this.replace(sSQL, aSQL);
+
+            try
+            {
+                // fire query
+                this.oCommand.ExecuteNonQuery();
+            }
+            catch (Exception oExecption)
+            {
+                throw new Exception(oExecption.Message);
+            }
         }
 
         public int insert(string sTable, Dictionary<string, string> aData)
@@ -226,7 +248,7 @@ namespace dbsqlite
             return this.iLastInsertRowID;
         }
 
-        public string replace(string sSQL, Dictionary<string, string> aSQL)
+        private string replace(string sSQL, Dictionary<string, string> aSQL)
         {
             // sort aSQL by keystring by length descending
             aSQL = (
